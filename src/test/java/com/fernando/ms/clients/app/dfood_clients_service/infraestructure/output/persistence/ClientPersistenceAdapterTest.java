@@ -15,9 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +27,7 @@ import static org.mockito.Mockito.when;
 public class ClientPersistenceAdapterTest {
 
     @Mock
-    private ClientJpaRepository clientPersistencePort;
+    private ClientJpaRepository clientJpaRepository;
 
     @Mock
     private ClientPersistenceMapper clientPersistenceMapper;
@@ -37,12 +39,12 @@ public class ClientPersistenceAdapterTest {
     void shouldReturnAListClientWhenIsRequired(){
         ClientEntity clientEntity= TestUtils.buildClientEntityMock();
         Client client=TestUtils.buildClientMock();
-        when(clientPersistencePort.findAll()).thenReturn(Collections.singletonList(clientEntity));
+        when(clientJpaRepository.findAll()).thenReturn(Collections.singletonList(clientEntity));
         when(clientPersistenceMapper.toClients(anyList())).thenReturn(Collections.singletonList(client));
 
         List<Client> clients=clientPersistenceAdapter.findAll();
         assertEquals(1,clients.size());
-        Mockito.verify(clientPersistencePort,times(1)).findAll();
+        Mockito.verify(clientJpaRepository,times(1)).findAll();
         Mockito.verify(clientPersistenceMapper,times(1)).toClients(anyList());
 
     }
@@ -50,13 +52,26 @@ public class ClientPersistenceAdapterTest {
     @Test
     void shouldReturnAListVoidClientWhenThereDoNotData(){
 
-        when(clientPersistencePort.findAll()).thenReturn(Collections.emptyList());
+        when(clientJpaRepository.findAll()).thenReturn(Collections.emptyList());
         when(clientPersistenceMapper.toClients(anyList())).thenReturn(Collections.emptyList());
 
         List<Client> clients=clientPersistenceAdapter.findAll();
         assertEquals(0,clients.size());
-        Mockito.verify(clientPersistencePort,times(1)).findAll();
+        Mockito.verify(clientJpaRepository,times(1)).findAll();
         Mockito.verify(clientPersistenceMapper,times(1)).toClients(anyList());
+
+    }
+
+    @Test
+    void shouldReturnAClientWhenFindById(){
+        ClientEntity clientEntity= TestUtils.buildClientEntityMock();
+        Client client= TestUtils.buildClientMock();
+        when(clientJpaRepository.findById(anyLong())).thenReturn(Optional.of(clientEntity));
+        when(clientPersistenceMapper.toClient(any(ClientEntity.class))).thenReturn(client);
+        Optional<Client> clientResponse=clientPersistenceAdapter.findById(1L);
+        assertNotNull(clientResponse);
+        Mockito.verify(clientJpaRepository,times(1)).findById(anyLong());
+        Mockito.verify(clientPersistenceMapper,times(1)).toClient(any(ClientEntity.class));
 
     }
 }

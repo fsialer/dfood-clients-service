@@ -11,4 +11,5 @@ import org.mapstruct.Mapper;
 public interface ClientPersistenceMapper {
 
     List<Client> toClients(List<ClientEntity> clients);
+    Client toClient(ClientEntity client);
 }

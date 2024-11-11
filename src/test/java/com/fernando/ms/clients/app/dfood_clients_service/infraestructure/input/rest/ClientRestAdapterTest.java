@@ -19,7 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -47,7 +48,7 @@ public class ClientRestAdapterTest {
     }
 
     @Test
-    void shouldReturnAListUsersWhenHaveData() throws Exception {
+    void shouldReturnAListClientsWhenHaveData() throws Exception {
 
         Client client= TestUtils.buildClientMock();
         List<ClientResponse> clientsResponse= Collections.singletonList(TestUtils.buildClientResponseMock());
@@ -66,6 +67,27 @@ public class ClientRestAdapterTest {
 
         Mockito.verify(clientInputPort,times(1)).findAll();
         Mockito.verify(clientRestMapper,times(1)).toClientsResponse(anyList());
+    }
+
+    @Test
+    void shouldReturnAClientWhenFindById() throws Exception {
+
+        Client client= TestUtils.buildClientMock();
+        ClientResponse clientResponse= TestUtils.buildClientResponseMock();
+
+        when(clientInputPort.findById(anyLong()))
+                .thenReturn(client);
+
+        when(clientRestMapper.toClientResponse(any(Client.class)))
+                .thenReturn(clientResponse);
+
+        mockMvc.perform(get("/clients/{id}",1L).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andDo(print());
+
+        Mockito.verify(clientInputPort,times(1)).findById(anyLong());
+        Mockito.verify(clientRestMapper,times(1)).toClientResponse(any(Client.class));
     }
 
 }

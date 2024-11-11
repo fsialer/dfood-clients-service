@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -18,4 +19,11 @@ public class ClientPersistenceAdapter implements ClientPersistencePort {
     public List<Client> findAll() {
         return clientPersistenceMapper.toClients(clientJpaRepository.findAll());
     }
+
+    @Override
+    public Optional<Client> findById(Long id) {
+        return clientJpaRepository.findById(id).map(clientPersistenceMapper::toClient);
+    }
+
+
 }

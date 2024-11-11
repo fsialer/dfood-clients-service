@@ -10,4 +10,8 @@ import java.util.List;
 public interface ClientRestMapper {
 
     List<ClientResponse> toClientsResponse(List<Client> clients);
+
+    ClientResponse toClientResponse(Client client);
+
+
 }

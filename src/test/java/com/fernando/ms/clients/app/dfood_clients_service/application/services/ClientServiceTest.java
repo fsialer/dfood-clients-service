@@ -1,6 +1,7 @@
 package com.fernando.ms.clients.app.dfood_clients_service.application.services;
 
 import com.fernando.ms.clients.app.dfood_clients_service.application.ports.output.ClientPersistencePort;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
 import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtils;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -41,5 +44,23 @@ public class ClientServiceTest {
         List<Client> clients=clientService.findAll();
         assertEquals(0,clients.size());
         Mockito.verify(clientPersistencePort,times(1)).findAll();
+    }
+
+    @Test
+    void shouldReturnClientWhenFindById(){
+        Client client= TestUtils.buildClientMock();
+        when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.of(client));
+        Client clientRes=clientService.findById(1L);
+        assertEquals(client,clientRes);
+        assertNotNull(clientRes);
+        Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+    }
+
+    @Test
+    void shouldReturnClientNotFoundExceptionWhenFindById(){
+        Client client= TestUtils.buildClientMock();
+        when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(ClientNotFoundException.class,()->clientService.findById(1L));
+        Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
     }
 }
