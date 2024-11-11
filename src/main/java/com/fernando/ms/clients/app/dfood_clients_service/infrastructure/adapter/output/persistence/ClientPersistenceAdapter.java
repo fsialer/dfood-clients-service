@@ -25,5 +25,10 @@ public class ClientPersistenceAdapter implements ClientPersistencePort {
         return clientJpaRepository.findById(id).map(clientPersistenceMapper::toClient);
     }
 
+    @Override
+    public Client save(Client client) {
+        return clientPersistenceMapper.toClient(clientJpaRepository.save(clientPersistenceMapper.toClientEntity(client)));
+    }
+
 
 }

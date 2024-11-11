@@ -74,4 +74,19 @@ public class ClientPersistenceAdapterTest {
         Mockito.verify(clientPersistenceMapper,times(1)).toClient(any(ClientEntity.class));
 
     }
+
+    @Test
+    void shouldSaveAnUserWhenIntoANewClient(){
+        ClientEntity clientEntity= TestUtils.buildClientEntityMock();
+        Client client= TestUtils.buildClientMock();
+        when(clientJpaRepository.save(any(ClientEntity.class))).thenReturn(clientEntity);
+        when(clientPersistenceMapper.toClientEntity(any(Client.class))).thenReturn(clientEntity);
+        when(clientPersistenceMapper.toClient(any(ClientEntity.class))).thenReturn(client);
+        Client clientNew=clientPersistenceAdapter.save(client);
+        assertNotNull(clientNew);
+        assertEquals(client,clientNew);
+        Mockito.verify(clientJpaRepository,times(1)).save(any(ClientEntity.class));
+        Mockito.verify(clientPersistenceMapper,times(1)).toClientEntity(any(Client.class));
+        Mockito.verify(clientPersistenceMapper,times(1)).toClient(any(ClientEntity.class));
+    }
 }

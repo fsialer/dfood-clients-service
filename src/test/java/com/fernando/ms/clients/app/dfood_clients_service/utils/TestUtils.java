@@ -2,6 +2,7 @@ package com.fernando.ms.clients.app.dfood_clients_service.utils;
 
 
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.request.CreateClientRequest;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.ClientResponse;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.ClientEntity;
 
@@ -42,6 +43,17 @@ public class TestUtils {
                 .fullName("Fernando Sialer")
                 .phone("965012869")
                 .email("asialer05@hotmail.com")
+                .build();
+    }
+
+    public static CreateClientRequest buildClientCreateRequestMock(){
+        return CreateClientRequest.builder()
+                .name("Fernando")
+                .lastname("Sialer")
+                .fullName("Fernando Sialer")
+                .phone("965012869")
+                .email("asialer05@hotmail.com")
+                .userId(1L)
                 .build();
     }
 }

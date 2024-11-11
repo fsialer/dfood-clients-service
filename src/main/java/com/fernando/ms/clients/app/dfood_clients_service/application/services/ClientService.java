@@ -24,4 +24,11 @@ public class ClientService implements ClientInputPort {
     public Client findById(Long id) {
         return clientPersistencePort.findById(id).orElseThrow(ClientNotFoundException::new);
     }
+
+    @Override
+    public Client save(Client client) {
+        return clientPersistencePort.save(client);
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.mapper;
 
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.request.CreateClientRequest;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.ClientResponse;
 import org.mapstruct.Mapper;
 
@@ -12,6 +13,8 @@ public interface ClientRestMapper {
     List<ClientResponse> toClientsResponse(List<Client> clients);
 
     ClientResponse toClientResponse(Client client);
+
+    Client toClient (CreateClientRequest client);
 
 
 }

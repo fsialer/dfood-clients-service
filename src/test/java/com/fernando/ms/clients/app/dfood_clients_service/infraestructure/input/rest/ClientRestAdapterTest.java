@@ -5,6 +5,7 @@ import com.fernando.ms.clients.app.dfood_clients_service.application.ports.input
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.ClientRestAdapter;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.mapper.ClientRestMapper;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.request.CreateClientRequest;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.ClientResponse;
 import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -88,6 +90,32 @@ public class ClientRestAdapterTest {
 
         Mockito.verify(clientInputPort,times(1)).findById(anyLong());
         Mockito.verify(clientRestMapper,times(1)).toClientResponse(any(Client.class));
+    }
+
+    @Test
+    void shouldReturnAClientWhenSaveANewUser() throws Exception {
+        ClientResponse clientResponse= TestUtils.buildClientResponseMock();
+        Client client= TestUtils.buildClientMock();
+        CreateClientRequest rq =TestUtils.buildClientCreateRequestMock();
+
+        when(clientInputPort.save(any(Client.class)))
+                .thenReturn(client);
+        when(clientRestMapper.toClientResponse(any(Client.class)))
+                .thenReturn(clientResponse);
+        when(clientRestMapper.toClient(any(CreateClientRequest.class))).thenReturn(client);
+
+        mockMvc.perform(post("/clients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(rq)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$").isNotEmpty())
+                //.andExpect(jsonPath("$").value(clientResponse))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andDo(print());
+
+        Mockito.verify(clientInputPort,times(1)).save(any(Client.class));
+        Mockito.verify(clientRestMapper,times(1)).toClientResponse(any(Client.class));
+        Mockito.verify(clientRestMapper,times(1)).toClient(any(CreateClientRequest.class));
     }
 
 }

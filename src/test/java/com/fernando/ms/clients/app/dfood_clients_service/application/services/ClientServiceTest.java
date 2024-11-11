@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -58,9 +59,17 @@ public class ClientServiceTest {
 
     @Test
     void shouldReturnClientNotFoundExceptionWhenFindById(){
-        Client client= TestUtils.buildClientMock();
         when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(ClientNotFoundException.class,()->clientService.findById(1L));
         Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+    }
+
+    @Test
+    void shouldReturnClientWhenIntoANewUser(){
+        Client client= TestUtils.buildClientMock();
+        when(clientPersistencePort.save(any(Client.class))).thenReturn(client);
+        Client clientResponse=clientService.save(client);
+        assertEquals(client,clientResponse);
+        Mockito.verify(clientPersistencePort,times(1)).save(any(Client.class));
     }
 }
