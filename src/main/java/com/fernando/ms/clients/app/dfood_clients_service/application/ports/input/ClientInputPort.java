@@ -11,4 +11,6 @@ public interface ClientInputPort {
     Client findById(Long id);
 
     Client save(Client client);
+
+    Client update(Long id,Client client);
 }

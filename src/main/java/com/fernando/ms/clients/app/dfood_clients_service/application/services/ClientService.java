@@ -30,5 +30,18 @@ public class ClientService implements ClientInputPort {
         return clientPersistencePort.save(client);
     }
 
+    @Override
+    public Client update(Long id, Client client) {
+        return clientPersistencePort.findById(id)
+                .map(clientUpdated->{
+                    clientUpdated.setName(client.getName());
+                    clientUpdated.setLastname(client.getLastname());
+                    clientUpdated.setPhone(client.getPhone());
+                    clientUpdated.setEmail(client.getEmail());
+                    return clientPersistencePort.save(clientUpdated);
+                })
+                .orElseThrow(ClientNotFoundException::new);
+    }
+
 
 }

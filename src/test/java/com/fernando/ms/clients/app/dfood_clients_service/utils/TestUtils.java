@@ -50,7 +50,6 @@ public class TestUtils {
         return CreateClientRequest.builder()
                 .name("Fernando")
                 .lastname("Sialer")
-                .fullName("Fernando Sialer")
                 .phone("965012869")
                 .email("asialer05@hotmail.com")
                 .userId(1L)

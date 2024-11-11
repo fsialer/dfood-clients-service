@@ -24,8 +24,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -114,6 +113,32 @@ public class ClientRestAdapterTest {
                 .andDo(print());
 
         Mockito.verify(clientInputPort,times(1)).save(any(Client.class));
+        Mockito.verify(clientRestMapper,times(1)).toClientResponse(any(Client.class));
+        Mockito.verify(clientRestMapper,times(1)).toClient(any(CreateClientRequest.class));
+    }
+
+    @Test
+    void shouldReturnAClientWhenIntoAnUserToUpdate() throws Exception {
+        ClientResponse clientResponse= TestUtils.buildClientResponseMock();
+        Client client= TestUtils.buildClientMock();
+        CreateClientRequest rq =TestUtils.buildClientCreateRequestMock();
+
+        when(clientInputPort.update(anyLong(),any(Client.class)))
+                .thenReturn(client);
+        when(clientRestMapper.toClientResponse(any(Client.class)))
+                .thenReturn(clientResponse);
+        when(clientRestMapper.toClient(any(CreateClientRequest.class))).thenReturn(client);
+
+        mockMvc.perform(put("/clients/{id}",1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(rq)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isNotEmpty())
+                //.andExpect(jsonPath("$").value(clientResponse))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andDo(print());
+
+        Mockito.verify(clientInputPort,times(1)).update(anyLong(),any(Client.class));
         Mockito.verify(clientRestMapper,times(1)).toClientResponse(any(Client.class));
         Mockito.verify(clientRestMapper,times(1)).toClient(any(CreateClientRequest.class));
     }

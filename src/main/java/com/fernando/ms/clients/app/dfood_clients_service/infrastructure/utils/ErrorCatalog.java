@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCatalog {
-    CLIENT_NOT_FOUND("CLIENTS_MS_001", "Client not found.");
+    CLIENTS_NOT_FOUND("CLIENTS_MS_001", "Client not found."),
+    CLIENTS_BAD_PARAMETERS("CLIENTS_MS_002", "Invalid parameters for creation."),
+    INTERNAL_SERVER_ERROR("CLIENTS_MS_000", "Internal server error.");
 
     private final String code;
     private final String message;

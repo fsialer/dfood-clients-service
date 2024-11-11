@@ -35,4 +35,9 @@ public class ClientRestAdapter {
         return ResponseEntity.created(URI.create("/clients/".concat(clientResponse.getId().toString()))).body(clientResponse);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ClientResponse> update(@PathVariable Long id,@Valid @RequestBody CreateClientRequest rq){
+        return ResponseEntity.ok(clientRestMapper.toClientResponse(clientInputPort.update(id,clientRestMapper.toClient(rq))));
+    }
+
 }

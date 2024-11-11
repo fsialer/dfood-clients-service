@@ -72,4 +72,26 @@ public class ClientServiceTest {
         assertEquals(client,clientResponse);
         Mockito.verify(clientPersistencePort,times(1)).save(any(Client.class));
     }
+
+    @Test
+    void shouldReturnClientWhenIntoAUserByUpdate(){
+        Client client= TestUtils.buildClientMock();
+
+        when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.of(client));
+        when(clientPersistencePort.save(any(Client.class))).thenReturn(client);
+        Client clientResponse=clientService.update(1L,client);
+        assertEquals(client,clientResponse);
+        Mockito.verify(clientPersistencePort,times(1)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+    }
+
+    @Test
+    void shouldReturnClientNotFoundWhenIntoAUserNotExist(){
+        Client client= TestUtils.buildClientMock();
+        when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(ClientNotFoundException.class,()->clientService.update(1L,client));
+        Mockito.verify(clientPersistencePort,times(0)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+    }
 }
