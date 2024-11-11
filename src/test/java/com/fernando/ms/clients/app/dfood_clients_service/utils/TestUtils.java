@@ -22,6 +22,18 @@ public class TestUtils {
                 .build();
     }
 
+    public static Client buildClientEmailChangedMock(){
+        return Client.builder()
+                .id(1L)
+                .name("Fernando")
+                .lastname("Sialer")
+                .fullName("Fernando Sialer")
+                .phone("965012869")
+                .email("asialer02@hotmail.com")
+                .userId(1L)
+                .build();
+    }
+
     public static ClientEntity buildClientEntityMock(){
         return ClientEntity.builder()
                 .id(1L)

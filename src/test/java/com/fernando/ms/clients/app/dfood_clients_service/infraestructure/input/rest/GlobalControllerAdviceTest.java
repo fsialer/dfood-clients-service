@@ -2,10 +2,14 @@ package com.fernando.ms.clients.app.dfood_clients_service.infraestructure.input.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fernando.ms.clients.app.dfood_clients_service.application.ports.input.ClientInputPort;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientEmailAlreadyExistsException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientNotFoundException;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.ClientRestAdapter;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.mapper.ClientRestMapper;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.request.CreateClientRequest;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.ErrorResponse;
+import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,6 +22,7 @@ import static com.fernando.ms.clients.app.dfood_clients_service.infrastructure.a
 import static com.fernando.ms.clients.app.dfood_clients_service.infrastructure.utils.ErrorCatalog.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -100,5 +105,30 @@ public class GlobalControllerAdviceTest {
                 .andDo(print());
     }
 
+    @Test
+    void whenThrowsClientEmailUserAlreadyExistsExceptionThenReturnBadRequest() throws Exception {
+        CreateClientRequest rq = TestUtils.buildClientCreateRequestMock();
+        Client client = TestUtils.buildClientMock();
 
+        when(clientRestMapper.toClient(any(CreateClientRequest.class)))
+                .thenReturn(client);
+
+        when(clientInputPort.save(any(Client.class)))
+                .thenThrow(new ClientEmailAlreadyExistsException(rq.getEmail()));
+
+        mockMvc.perform(post("/clients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(rq)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> {
+                    ErrorResponse errorResponse = objectMapper.readValue(
+                            result.getResponse().getContentAsString(), ErrorResponse.class);
+                    assertEquals(CLIENTS_EMAIL_USER_ALREADY_EXISTS.getCode(), errorResponse.getCode());
+                    assertEquals(FUNCTIONAL, errorResponse.getType());
+                    assertEquals(CLIENTS_EMAIL_USER_ALREADY_EXISTS.getMessage(), errorResponse.getMessage());
+                    assertEquals("Client email: " + rq.getEmail() + " already exists!", errorResponse.getDetails().get(0));
+                    assertNotNull(errorResponse.getTimestamp());
+                })
+                .andDo(print());
+    }
 }

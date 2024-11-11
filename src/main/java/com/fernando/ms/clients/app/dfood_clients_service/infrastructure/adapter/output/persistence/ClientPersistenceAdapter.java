@@ -30,5 +30,10 @@ public class ClientPersistenceAdapter implements ClientPersistencePort {
         return clientPersistenceMapper.toClient(clientJpaRepository.save(clientPersistenceMapper.toClientEntity(client)));
     }
 
+    @Override
+    public boolean existsByEmail(String email) {
+        return clientJpaRepository.existsByEmailIgnoreCase(email);
+    }
+
 
 }

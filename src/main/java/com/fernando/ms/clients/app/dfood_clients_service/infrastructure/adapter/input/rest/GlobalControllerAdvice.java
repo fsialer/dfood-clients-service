@@ -1,5 +1,6 @@
 package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest;
 
+import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientEmailAlreadyExistsException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,18 @@ public class GlobalControllerAdvice {
                         .map(DefaultMessageSourceResolvable::getDefaultMessage)
                         .toList())
                 .timestamp(LocalDate.now().toString())
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ClientEmailAlreadyExistsException.class)
+    public ErrorResponse handleClientEmailAlreadyExistsException(ClientEmailAlreadyExistsException e) {
+        return ErrorResponse.builder()
+                .code(CLIENTS_EMAIL_USER_ALREADY_EXISTS.getCode())
+                .type(FUNCTIONAL)
+                .message(CLIENTS_EMAIL_USER_ALREADY_EXISTS.getMessage())
+                .timestamp(LocalDate.now().toString())
+                .details(Collections.singletonList(e.getMessage()))
                 .build();
     }
 

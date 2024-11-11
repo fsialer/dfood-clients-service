@@ -2,6 +2,7 @@ package com.fernando.ms.clients.app.dfood_clients_service.application.services;
 
 import com.fernando.ms.clients.app.dfood_clients_service.application.ports.input.ClientInputPort;
 import com.fernando.ms.clients.app.dfood_clients_service.application.ports.output.ClientPersistencePort;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientEmailAlreadyExistsException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,9 @@ public class ClientService implements ClientInputPort {
 
     @Override
     public Client save(Client client) {
+        if(clientPersistencePort.existsByEmail(client.getEmail())){
+            throw new ClientEmailAlreadyExistsException(client.getEmail());
+        }
         return clientPersistencePort.save(client);
     }
 
@@ -37,7 +41,14 @@ public class ClientService implements ClientInputPort {
                     clientUpdated.setName(client.getName());
                     clientUpdated.setLastname(client.getLastname());
                     clientUpdated.setPhone(client.getPhone());
-                    clientUpdated.setEmail(client.getEmail());
+                    System.out.println(clientUpdated.getEmail().equals(client.getEmail()));
+                    if(!clientUpdated.getEmail().equals(client.getEmail())){
+
+                        if(clientPersistencePort.existsByEmail(client.getEmail())){
+                            throw new ClientEmailAlreadyExistsException(client.getEmail());
+                        }
+                        clientUpdated.setEmail(client.getEmail());
+                    }
                     return clientPersistencePort.save(clientUpdated);
                 })
                 .orElseThrow(ClientNotFoundException::new);

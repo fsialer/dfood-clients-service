@@ -1,6 +1,7 @@
 package com.fernando.ms.clients.app.dfood_clients_service.application.services;
 
 import com.fernando.ms.clients.app.dfood_clients_service.application.ports.output.ClientPersistencePort;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientEmailAlreadyExistsException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
 import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtils;
@@ -16,8 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -68,30 +68,55 @@ public class ClientServiceTest {
     void shouldReturnClientWhenIntoANewUser(){
         Client client= TestUtils.buildClientMock();
         when(clientPersistencePort.save(any(Client.class))).thenReturn(client);
+        when(clientPersistencePort.existsByEmail(anyString())).thenReturn(false);
         Client clientResponse=clientService.save(client);
         assertEquals(client,clientResponse);
         Mockito.verify(clientPersistencePort,times(1)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort,times(1)).existsByEmail(anyString());
+    }
+
+    @Test
+    void shouldReturnClientEmailAlreadyExistsExceptionWhenEmailRepeated(){
+        Client client= TestUtils.buildClientMock();
+        when(clientPersistencePort.existsByEmail(anyString())).thenReturn(true);
+        assertThrows(ClientEmailAlreadyExistsException.class,()->clientService.save(client));
+        Mockito.verify(clientPersistencePort,times(0)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort,times(1)).existsByEmail(anyString());
     }
 
     @Test
     void shouldReturnClientWhenIntoAUserByUpdate(){
         Client client= TestUtils.buildClientMock();
-
+        Client clientEmail= TestUtils.buildClientEmailChangedMock();
         when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.of(client));
-        when(clientPersistencePort.save(any(Client.class))).thenReturn(client);
-        Client clientResponse=clientService.update(1L,client);
-        assertEquals(client,clientResponse);
+        when(clientPersistencePort.existsByEmail(anyString())).thenReturn(false);
+        when(clientPersistencePort.save(any(Client.class))).thenReturn(clientEmail);
+
+        Client clientResponse=clientService.update(1L,clientEmail);
+        assertEquals(clientEmail,clientResponse);
         Mockito.verify(clientPersistencePort,times(1)).save(any(Client.class));
         Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+        Mockito.verify(clientPersistencePort,times(1)).existsByEmail(anyString());
     }
 
     @Test
     void shouldReturnClientNotFoundWhenIntoAUserNotExist(){
         Client client= TestUtils.buildClientMock();
         when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
-
         assertThrows(ClientNotFoundException.class,()->clientService.update(1L,client));
         Mockito.verify(clientPersistencePort,times(0)).save(any(Client.class));
         Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+    }
+
+    @Test
+    void shouldReturnClientEmailAlreadyExistsExceptionWhenUpdatedEmailRepeated(){
+        Client client= TestUtils.buildClientMock();
+        Client clientEmail= TestUtils.buildClientEmailChangedMock();
+        when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.of(client));
+        when(clientPersistencePort.existsByEmail(anyString())).thenReturn(true);
+        assertThrows(ClientEmailAlreadyExistsException.class,()->clientService.update(1L,clientEmail));
+        Mockito.verify(clientPersistencePort,times(0)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+        Mockito.verify(clientPersistencePort,times(1)).existsByEmail(anyString());
     }
 }

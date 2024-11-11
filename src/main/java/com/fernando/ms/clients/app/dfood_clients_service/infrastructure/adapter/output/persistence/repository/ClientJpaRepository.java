@@ -4,4 +4,5 @@ import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClientJpaRepository extends JpaRepository<ClientEntity,Long> {
+    boolean existsByEmailIgnoreCase(String email);
 }
