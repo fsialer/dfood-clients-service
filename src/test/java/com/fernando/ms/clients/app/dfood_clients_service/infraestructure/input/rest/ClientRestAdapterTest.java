@@ -143,4 +143,24 @@ public class ClientRestAdapterTest {
         Mockito.verify(clientRestMapper,times(1)).toClient(any(CreateClientRequest.class));
     }
 
+    @Test
+    void shouldReturnClientInactiveWhenInactiveClientById() throws Exception {
+
+        Client user= TestUtils.buildClientInactiveMock();
+        ClientResponse clientResponse= TestUtils.buildClientInactiveResponseMock();
+        when(clientInputPort.inactive(anyLong()))
+                .thenReturn(user);
+        when(clientRestMapper.toClientResponse(any(Client.class)))
+                .thenReturn(clientResponse);
+        mockMvc.perform(put("/clients/{id}/inactive",1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusClient").value("INACTIVE"))
+                .andDo(print());
+        Mockito.verify(clientInputPort,times(1)).inactive(anyLong());
+
+        Mockito.verify(clientRestMapper,times(1)).toClientResponse(any(Client.class));
+
+    }
+
 }
