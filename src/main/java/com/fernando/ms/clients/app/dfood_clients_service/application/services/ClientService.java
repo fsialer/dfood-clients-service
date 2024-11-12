@@ -65,4 +65,12 @@ public class ClientService implements ClientInputPort {
                 .orElseThrow(ClientNotFoundException::new);
     }
 
+    @Override
+    public void delete(Long id) {
+        if(!clientPersistencePort.findById(id).isPresent()){
+            throw new ClientNotFoundException();
+        }
+        clientPersistencePort.delete(id);
+    }
+
 }

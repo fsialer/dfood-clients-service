@@ -11,4 +11,5 @@ public interface ClientPersistencePort {
     Optional<Client> findById(Long id);
     Client save(Client client);
     boolean existsByEmail(String email);
+    void delete(Long id);
 }

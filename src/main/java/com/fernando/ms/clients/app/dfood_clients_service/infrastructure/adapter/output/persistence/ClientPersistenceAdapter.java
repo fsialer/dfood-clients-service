@@ -35,5 +35,10 @@ public class ClientPersistenceAdapter implements ClientPersistencePort {
         return clientJpaRepository.existsByEmailIgnoreCase(email);
     }
 
+    @Override
+    public void delete(Long id) {
+        clientJpaRepository.deleteById(id);
+    }
+
 
 }

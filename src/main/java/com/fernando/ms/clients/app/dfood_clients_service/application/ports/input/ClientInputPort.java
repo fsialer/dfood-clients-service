@@ -15,4 +15,6 @@ public interface ClientInputPort {
     Client update(Long id,Client client);
 
     Client inactive(Long id);
+
+    void delete(Long id);
 }

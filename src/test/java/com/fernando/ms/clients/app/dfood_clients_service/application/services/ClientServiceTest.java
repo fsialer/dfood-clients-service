@@ -18,8 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ClientServiceTest {
@@ -140,6 +139,17 @@ public class ClientServiceTest {
                 .thenReturn(Optional.empty());
         assertThrows(ClientNotFoundException.class,()->clientService.inactive(2L));
         Mockito.verify(clientPersistencePort,times(0)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+    }
+
+    @Test
+    void shouldReturnVoidWhenAClientDeleteById(){
+        Client clientNew=TestUtils.buildClientInactiveMock();
+        doNothing().when(clientPersistencePort).delete(anyLong());
+        when(clientPersistencePort.findById(anyLong()))
+                .thenReturn(Optional.of(clientNew));
+        clientService.delete(1L);
+        Mockito.verify(clientPersistencePort,times(1)).delete(anyLong());
         Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
     }
 }

@@ -6,6 +6,7 @@ import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.ClientResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,12 @@ public class ClientRestAdapter {
     @PutMapping("/{id}/inactive")
     public ResponseEntity<ClientResponse> inactive(@PathVariable Long id){
         return ResponseEntity.ok(clientRestMapper.toClientResponse(clientInputPort.inactive(id)));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        clientInputPort.delete(id);
     }
 
 }

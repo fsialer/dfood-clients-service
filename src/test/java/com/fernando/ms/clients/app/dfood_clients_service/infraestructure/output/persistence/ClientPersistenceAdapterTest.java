@@ -20,8 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ClientPersistenceAdapterTest {
@@ -88,5 +87,12 @@ public class ClientPersistenceAdapterTest {
         Mockito.verify(clientJpaRepository,times(1)).save(any(ClientEntity.class));
         Mockito.verify(clientPersistenceMapper,times(1)).toClientEntity(any(Client.class));
         Mockito.verify(clientPersistenceMapper,times(1)).toClient(any(ClientEntity.class));
+    }
+
+    @Test
+    void shouldVoidWhenDeleteAClient(){
+        doNothing().when(clientJpaRepository).deleteById(anyLong());
+        clientPersistenceAdapter.delete(1L);
+        Mockito.verify(clientJpaRepository,times(1)).deleteById(anyLong());
     }
 }

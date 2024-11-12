@@ -22,8 +22,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -162,5 +161,21 @@ public class ClientRestAdapterTest {
         Mockito.verify(clientRestMapper,times(1)).toClientResponse(any(Client.class));
 
     }
+
+    @Test
+    void shouldReturnNoContentWhenDeleteAClientById() throws Exception {
+
+        Client user= TestUtils.buildClientInactiveMock();
+        ClientResponse clientResponse= TestUtils.buildClientInactiveResponseMock();
+        doNothing().when(clientInputPort).delete(anyLong());
+
+        mockMvc.perform(delete("/clients/{id}",1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+        Mockito.verify(clientInputPort,times(1)).delete(anyLong());
+
+    }
+
 
 }
