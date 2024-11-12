@@ -40,4 +40,9 @@ public class ClientRestAdapter {
         return ResponseEntity.ok(clientRestMapper.toClientResponse(clientInputPort.update(id,clientRestMapper.toClient(rq))));
     }
 
+    @PutMapping("/{id}/inactive")
+    public ResponseEntity<ClientResponse> inactive(@PathVariable Long id){
+        return ResponseEntity.ok(clientRestMapper.toClientResponse(clientInputPort.inactive(id)));
+    }
+
 }

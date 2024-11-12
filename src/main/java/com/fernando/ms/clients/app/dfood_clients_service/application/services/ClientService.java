@@ -5,6 +5,7 @@ import com.fernando.ms.clients.app.dfood_clients_service.application.ports.outpu
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientEmailAlreadyExistsException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.models.enums.StatusClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,14 +38,14 @@ public class ClientService implements ClientInputPort {
     @Override
     public Client update(Long id, Client client) {
         return clientPersistencePort.findById(id)
-                .map(clientUpdated->{
+                .map(clientUpdated -> {
                     clientUpdated.setName(client.getName());
                     clientUpdated.setLastname(client.getLastname());
                     clientUpdated.setPhone(client.getPhone());
                     System.out.println(clientUpdated.getEmail().equals(client.getEmail()));
-                    if(!clientUpdated.getEmail().equals(client.getEmail())){
+                    if (!clientUpdated.getEmail().equals(client.getEmail())) {
 
-                        if(clientPersistencePort.existsByEmail(client.getEmail())){
+                        if (clientPersistencePort.existsByEmail(client.getEmail())) {
                             throw new ClientEmailAlreadyExistsException(client.getEmail());
                         }
                         clientUpdated.setEmail(client.getEmail());
@@ -54,5 +55,14 @@ public class ClientService implements ClientInputPort {
                 .orElseThrow(ClientNotFoundException::new);
     }
 
+    @Override
+    public Client inactive(Long id) {
+        return clientPersistencePort.findById(id)
+                .map(clientUpdated->{
+                    clientUpdated.setStatusClient(StatusClient.INACTIVE);
+                    return clientPersistencePort.save(clientUpdated);
+                })
+                .orElseThrow(ClientNotFoundException::new);
+    }
 
 }

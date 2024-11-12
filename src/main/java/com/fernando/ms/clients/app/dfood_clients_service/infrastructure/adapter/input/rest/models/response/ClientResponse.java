@@ -1,5 +1,6 @@
 package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response;
 
+import com.fernando.ms.clients.app.dfood_clients_service.domain.models.enums.StatusClient;
 import lombok.*;
 
 @Getter
@@ -14,4 +15,5 @@ public class ClientResponse {
     private String fullName;
     private String phone;
     private String email;
+    private StatusClient statusClient;
 }

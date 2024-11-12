@@ -1,5 +1,6 @@
 package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models;
 
+import com.fernando.ms.clients.app.dfood_clients_service.domain.models.enums.StatusClient;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,5 +22,6 @@ public class ClientEntity {
     private String phone;
     private String email;
     private Long userId;
+    private StatusClient statusClient;
     private LocalDate createdAt;
 }

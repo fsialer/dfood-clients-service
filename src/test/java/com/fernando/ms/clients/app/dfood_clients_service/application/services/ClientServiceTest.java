@@ -31,92 +31,117 @@ public class ClientServiceTest {
     private ClientService clientService;
 
     @Test
-    void shouldReturnClientsWhenListExistData(){
-        Client client= TestUtils.buildClientMock();
+    void shouldReturnClientsWhenListExistData() {
+        Client client = TestUtils.buildClientMock();
         when(clientPersistencePort.findAll()).thenReturn(Collections.singletonList(client));
-        List<Client> clients=clientService.findAll();
-        assertEquals(1,clients.size());
-        Mockito.verify(clientPersistencePort,times(1)).findAll();
+        List<Client> clients = clientService.findAll();
+        assertEquals(1, clients.size());
+        Mockito.verify(clientPersistencePort, times(1)).findAll();
     }
 
     @Test
-    void shouldReturnListVoidWhenThereDoNotData(){
+    void shouldReturnListVoidWhenThereDoNotData() {
         when(clientPersistencePort.findAll()).thenReturn(Collections.emptyList());
-        List<Client> clients=clientService.findAll();
-        assertEquals(0,clients.size());
-        Mockito.verify(clientPersistencePort,times(1)).findAll();
+        List<Client> clients = clientService.findAll();
+        assertEquals(0, clients.size());
+        Mockito.verify(clientPersistencePort, times(1)).findAll();
     }
 
     @Test
-    void shouldReturnClientWhenFindById(){
-        Client client= TestUtils.buildClientMock();
+    void shouldReturnClientWhenFindById() {
+        Client client = TestUtils.buildClientMock();
         when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.of(client));
-        Client clientRes=clientService.findById(1L);
-        assertEquals(client,clientRes);
+        Client clientRes = clientService.findById(1L);
+        assertEquals(client, clientRes);
         assertNotNull(clientRes);
-        Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+        Mockito.verify(clientPersistencePort, times(1)).findById(anyLong());
     }
 
     @Test
-    void shouldReturnClientNotFoundExceptionWhenFindById(){
+    void shouldReturnClientNotFoundExceptionWhenFindById() {
         when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(ClientNotFoundException.class,()->clientService.findById(1L));
-        Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+        assertThrows(ClientNotFoundException.class, () -> clientService.findById(1L));
+        Mockito.verify(clientPersistencePort, times(1)).findById(anyLong());
     }
 
     @Test
-    void shouldReturnClientWhenIntoANewUser(){
-        Client client= TestUtils.buildClientMock();
+    void shouldReturnClientWhenIntoANewUser() {
+        Client client = TestUtils.buildClientMock();
         when(clientPersistencePort.save(any(Client.class))).thenReturn(client);
         when(clientPersistencePort.existsByEmail(anyString())).thenReturn(false);
-        Client clientResponse=clientService.save(client);
-        assertEquals(client,clientResponse);
-        Mockito.verify(clientPersistencePort,times(1)).save(any(Client.class));
-        Mockito.verify(clientPersistencePort,times(1)).existsByEmail(anyString());
+        Client clientResponse = clientService.save(client);
+        assertEquals(client, clientResponse);
+        Mockito.verify(clientPersistencePort, times(1)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort, times(1)).existsByEmail(anyString());
     }
 
     @Test
-    void shouldReturnClientEmailAlreadyExistsExceptionWhenEmailRepeated(){
-        Client client= TestUtils.buildClientMock();
+    void shouldReturnClientEmailAlreadyExistsExceptionWhenEmailRepeated() {
+        Client client = TestUtils.buildClientMock();
         when(clientPersistencePort.existsByEmail(anyString())).thenReturn(true);
-        assertThrows(ClientEmailAlreadyExistsException.class,()->clientService.save(client));
-        Mockito.verify(clientPersistencePort,times(0)).save(any(Client.class));
-        Mockito.verify(clientPersistencePort,times(1)).existsByEmail(anyString());
+        assertThrows(ClientEmailAlreadyExistsException.class, () -> clientService.save(client));
+        Mockito.verify(clientPersistencePort, times(0)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort, times(1)).existsByEmail(anyString());
     }
 
     @Test
-    void shouldReturnClientWhenIntoAUserByUpdate(){
-        Client client= TestUtils.buildClientMock();
-        Client clientEmail= TestUtils.buildClientEmailChangedMock();
+    void shouldReturnClientWhenIntoAUserByUpdate() {
+        Client client = TestUtils.buildClientMock();
+        Client clientEmail = TestUtils.buildClientEmailChangedMock();
         when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.of(client));
         when(clientPersistencePort.existsByEmail(anyString())).thenReturn(false);
         when(clientPersistencePort.save(any(Client.class))).thenReturn(clientEmail);
 
-        Client clientResponse=clientService.update(1L,clientEmail);
-        assertEquals(clientEmail,clientResponse);
-        Mockito.verify(clientPersistencePort,times(1)).save(any(Client.class));
-        Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
-        Mockito.verify(clientPersistencePort,times(1)).existsByEmail(anyString());
+        Client clientResponse = clientService.update(1L, clientEmail);
+        assertEquals(clientEmail, clientResponse);
+        Mockito.verify(clientPersistencePort, times(1)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort, times(1)).findById(anyLong());
+        Mockito.verify(clientPersistencePort, times(1)).existsByEmail(anyString());
     }
 
     @Test
-    void shouldReturnClientNotFoundWhenIntoAUserNotExist(){
-        Client client= TestUtils.buildClientMock();
+    void shouldReturnClientNotFoundWhenIntoAUserNotExist() {
+        Client client = TestUtils.buildClientMock();
         when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(ClientNotFoundException.class,()->clientService.update(1L,client));
-        Mockito.verify(clientPersistencePort,times(0)).save(any(Client.class));
-        Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+        assertThrows(ClientNotFoundException.class, () -> clientService.update(1L, client));
+        Mockito.verify(clientPersistencePort, times(0)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort, times(1)).findById(anyLong());
     }
 
     @Test
-    void shouldReturnClientEmailAlreadyExistsExceptionWhenUpdatedEmailRepeated(){
-        Client client= TestUtils.buildClientMock();
-        Client clientEmail= TestUtils.buildClientEmailChangedMock();
+    void shouldReturnClientEmailAlreadyExistsExceptionWhenUpdatedEmailRepeated() {
+        Client client = TestUtils.buildClientMock();
+        Client clientEmail = TestUtils.buildClientEmailChangedMock();
         when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.of(client));
         when(clientPersistencePort.existsByEmail(anyString())).thenReturn(true);
-        assertThrows(ClientEmailAlreadyExistsException.class,()->clientService.update(1L,clientEmail));
+        assertThrows(ClientEmailAlreadyExistsException.class, () -> clientService.update(1L, clientEmail));
+        Mockito.verify(clientPersistencePort, times(0)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort, times(1)).findById(anyLong());
+        Mockito.verify(clientPersistencePort, times(1)).existsByEmail(anyString());
+    }
+
+    @Test
+    void shouldInactiveAnUserWhenUserFindById(){
+        Client clientNew=TestUtils.buildClientInactiveMock();
+        when(clientPersistencePort.save(any(Client.class)))
+                .thenReturn(clientNew);
+        when(clientPersistencePort.findById(anyLong()))
+                .thenReturn(Optional.of(clientNew));
+        Client client=clientService.inactive(1L);
+        assertEquals(clientNew.getStatusClient(),client.getStatusClient());
+        Mockito.verify(clientPersistencePort,times(1)).save(any(Client.class));
+        Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
+
+    }
+
+    @Test
+    void shouldReturnUserNotFoundExceptionWhenWhenInactiveUserFindById(){
+        when(clientPersistencePort.findById(anyLong()))
+                .thenReturn(Optional.empty());
+        assertThrows(ClientNotFoundException.class,()->clientService.inactive(2L));
         Mockito.verify(clientPersistencePort,times(0)).save(any(Client.class));
         Mockito.verify(clientPersistencePort,times(1)).findById(anyLong());
-        Mockito.verify(clientPersistencePort,times(1)).existsByEmail(anyString());
     }
 }
+
+
