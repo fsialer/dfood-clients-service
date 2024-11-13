@@ -29,4 +29,9 @@ public class AddressPersistenceAdapter implements AddressPersistencePort {
     public List<Address> findAll() {
         return addressPersistenceMapper.toAddresses(addressJpaRepository.findAll());
     }
+
+    @Override
+    public Optional<Address> findById(Long id) {
+        return addressJpaRepository.findById(id).map(addressPersistenceMapper::toAddress);
+    }
 }

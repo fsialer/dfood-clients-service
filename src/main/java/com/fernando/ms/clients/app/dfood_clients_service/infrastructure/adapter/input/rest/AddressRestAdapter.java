@@ -9,6 +9,7 @@ import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,5 +25,10 @@ public class AddressRestAdapter {
     @GetMapping
     public ResponseEntity<List<AddressResponse>> findAll(){
         return ResponseEntity.ok().body(addressRestMapper.toAddressesResponse(addressInputPort.findAll()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AddressResponse> findById(@PathVariable Long id){
+        return ResponseEntity.ok().body(addressRestMapper.toAddressResponse(addressInputPort.findById(id)));
     }
 }

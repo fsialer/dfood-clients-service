@@ -1,11 +1,15 @@
 package com.fernando.ms.clients.app.dfood_clients_service.infraestructure.input.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fernando.ms.clients.app.dfood_clients_service.application.ports.input.AddressInputPort;
 import com.fernando.ms.clients.app.dfood_clients_service.application.ports.input.ClientInputPort;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.AddressNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientEmailAlreadyExistsException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.AddressRestAdapter;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.ClientRestAdapter;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.mapper.AddressRestMapper;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.mapper.ClientRestMapper;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.request.CreateClientRequest;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.ErrorResponse;
@@ -29,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = {ClientRestAdapter.class})
+@WebMvcTest(controllers = {ClientRestAdapter.class, AddressRestAdapter.class})
 public class GlobalControllerAdviceTest {
     @Autowired
     private MockMvc mockMvc;
@@ -39,6 +43,12 @@ public class GlobalControllerAdviceTest {
 
     @MockBean
     private ClientInputPort clientInputPort;
+
+    @MockBean
+    private AddressInputPort addressInputPort;
+
+    @MockBean
+    private AddressRestMapper addressRestMapper;
 
     @MockBean
     private ClientRestMapper clientRestMapper;
@@ -132,5 +142,23 @@ public class GlobalControllerAdviceTest {
                 .andDo(print());
     }
 
+    @Test
+    void whenThrowsAddressNotFoundExceptionThenReturnNotFound() throws Exception {
+        when(addressInputPort.findById(anyLong()))
+                .thenThrow(new AddressNotFoundException());
+        mockMvc.perform(get("/addresses/{id}",2L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(result->{
+                    ErrorResponse errorResponse=objectMapper.readValue(
+                            result.getResponse().getContentAsString(), ErrorResponse.class);
+                    assertAll(
+                            ()->assertEquals(CLIENTS_ADDRESS_NOT_FOUND.getCode(),errorResponse.getCode()),
+                            ()->assertEquals(FUNCTIONAL,errorResponse.getType()),
+                            ()->assertEquals(CLIENTS_ADDRESS_NOT_FOUND.getMessage(),errorResponse.getMessage()),
+                            ()->assertNotNull(errorResponse.getTimestamp())
+                    );
+                });
+    }
 
 }

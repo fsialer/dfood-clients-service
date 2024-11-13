@@ -11,4 +11,5 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface AddressRestMapper {
     List<AddressResponse> toAddressesResponse(List<Address> addresses);
+    AddressResponse toAddressResponse(Address address);
 }

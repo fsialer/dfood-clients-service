@@ -1,5 +1,6 @@
 package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest;
 
+import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.AddressNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientEmailAlreadyExistsException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.ErrorResponse;
@@ -32,6 +33,19 @@ public class GlobalControllerAdvice {
                 .timestamp(LocalDate.now().toString())
                 .build();
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(AddressNotFoundException.class)
+    public ErrorResponse handleAddressNotFoundException() {
+        return ErrorResponse.builder()
+                .code(CLIENTS_ADDRESS_NOT_FOUND.getCode())
+                .type(FUNCTIONAL)
+                .message(CLIENTS_ADDRESS_NOT_FOUND.getMessage())
+                .timestamp(LocalDate.now().toString())
+                .build();
+    }
+
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

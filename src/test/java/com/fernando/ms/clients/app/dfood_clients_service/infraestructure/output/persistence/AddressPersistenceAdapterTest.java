@@ -20,9 +20,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -61,6 +63,19 @@ public class AddressPersistenceAdapterTest {
         assertEquals(0,addresses.size());
         Mockito.verify(addressJpaRepository,times(1)).findAll();
         Mockito.verify(addressPersistenceMapper,times(1)).toAddresses(anyList());
+
+    }
+
+    @Test
+    void shouldReturnAnAddressWhenFindById(){
+        AddressEntity addressEntity= TestUtils.buildAddressEntityMock();
+        Address address= TestUtils.buildAddressMock();
+        when(addressJpaRepository.findById(anyLong())).thenReturn(Optional.of(addressEntity));
+        when(addressPersistenceMapper.toAddress(any(AddressEntity.class))).thenReturn(address);
+        Optional<Address> addressResponse=addressPersistenceAdapter.findById(1L);
+        assertNotNull(addressResponse);
+        Mockito.verify(addressJpaRepository,times(1)).findById(anyLong());
+        Mockito.verify(addressPersistenceMapper,times(1)).toAddress(any(AddressEntity.class));
 
     }
 }

@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -70,6 +70,27 @@ public class AddressRestAdapterTest {
 
         Mockito.verify(addressInputPort,times(1)).findAll();
         Mockito.verify(addressRestMapper,times(1)).toAddressesResponse(anyList());
+    }
+
+    @Test
+    void shouldReturnAnAddressWhenFindById() throws Exception {
+
+        Address address= TestUtils.buildAddressMock();
+        AddressResponse addressResponse= TestUtils.buildAddressResponseMock();
+
+        when(addressInputPort.findById(anyLong()))
+                .thenReturn(address);
+
+        when(addressRestMapper.toAddressResponse(any(Address.class)))
+                .thenReturn(addressResponse);
+
+        mockMvc.perform(get("/addresses/{id}",1L).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andDo(print());
+
+        Mockito.verify(addressInputPort,times(1)).findById(anyLong());
+        Mockito.verify(addressRestMapper,times(1)).toAddressResponse(any(Address.class));
     }
 
 }

@@ -9,6 +9,7 @@ public enum ErrorCatalog {
     CLIENTS_NOT_FOUND("CLIENTS_MS_001", "Client not found."),
     CLIENTS_BAD_PARAMETERS("CLIENTS_MS_002", "Invalid parameters for creation."),
     CLIENTS_EMAIL_USER_ALREADY_EXISTS("CLIENTS_MS_003", "Email already exists."),
+    CLIENTS_ADDRESS_NOT_FOUND("CLIENTS_MS_004", "Address not found."),
     INTERNAL_SERVER_ERROR("CLIENTS_MS_000", "Internal server error.");
 
     private final String code;

@@ -12,4 +12,6 @@ import java.util.List;
 public interface AddressPersistenceMapper {
 
     List<Address> toAddresses(List<AddressEntity> addresses);
+
+    Address toAddress(AddressEntity address);
 }

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface AddressInputPort {
     List<Address> findAll();
+    Address findById(Long id);
 }
+   
