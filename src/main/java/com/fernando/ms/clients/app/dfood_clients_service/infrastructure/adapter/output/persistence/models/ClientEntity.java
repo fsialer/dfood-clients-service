@@ -1,10 +1,14 @@
 package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models;
 
+import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Address;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.enums.StatusClient;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,4 +28,6 @@ public class ClientEntity {
     private Long userId;
     private StatusClient statusClient;
     private LocalDate createdAt;
+    @OneToMany
+    private List<AddressEntity> addresses;
 }

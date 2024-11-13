@@ -3,6 +3,8 @@ package com.fernando.ms.clients.app.dfood_clients_service.domain.models;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.enums.StatusClient;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,4 +19,5 @@ public class Client {
     private String email;
     private Long userId;
     private StatusClient statusClient;
+    private List<Client> clients;
 }

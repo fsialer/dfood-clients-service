@@ -3,6 +3,8 @@ package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.enums.StatusClient;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,4 +18,5 @@ public class ClientResponse {
     private String phone;
     private String email;
     private StatusClient statusClient;
+    private List<AddressResponse> addresses;
 }
