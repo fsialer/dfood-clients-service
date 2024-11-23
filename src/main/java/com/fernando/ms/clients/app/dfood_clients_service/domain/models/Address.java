@@ -2,8 +2,6 @@ package com.fernando.ms.clients.app.dfood_clients_service.domain.models;
 
 import lombok.*;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,5 +12,5 @@ public class Address {
     private String street;
     private Integer number;
     private Boolean selected;
-    private Client client;
+    private Long clientId;
 }

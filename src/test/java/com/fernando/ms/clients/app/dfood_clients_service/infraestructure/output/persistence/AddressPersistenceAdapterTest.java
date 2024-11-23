@@ -3,14 +3,14 @@ package com.fernando.ms.clients.app.dfood_clients_service.infraestructure.output
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Address;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.AddressPersistenceAdapter;
-import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.ClientPersistenceAdapter;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.mapper.AddressPersistenceMapper;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.mapper.ClientPersistenceMapper;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.AddressEntity;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.ClientEntity;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.repository.AddressJpaRepository;
-import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.repository.ClientJpaRepository;
-import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtils;
+import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtilsAddress;
+import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtilsClient;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,8 +25,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AddressPersistenceAdapterTest {
@@ -36,13 +35,17 @@ public class AddressPersistenceAdapterTest {
     @Mock
     private AddressPersistenceMapper addressPersistenceMapper;
 
+    @Mock
+    private ClientPersistenceMapper clientPersistenceMapper;
+
     @InjectMocks
     private AddressPersistenceAdapter addressPersistenceAdapter;
 
     @Test
-    void shouldReturnAListAddressWhenIsRequired(){
-        AddressEntity addressEntity= TestUtils.buildAddressEntityMock();
-        Address address= TestUtils.buildAddressMock();
+    @DisplayName("When Addresses Information Exists  Expect A List Addresses Availability")
+    void When_AddressesInformationExists_Expect_AListAddressesAvailability(){
+        AddressEntity addressEntity= TestUtilsAddress.buildAddressEntityMock();
+        Address address= TestUtilsAddress.buildAddressMock();
         when(addressJpaRepository.findAll()).thenReturn(Collections.singletonList(addressEntity));
         when(addressPersistenceMapper.toAddresses(anyList())).thenReturn(Collections.singletonList(address));
 
@@ -54,8 +57,8 @@ public class AddressPersistenceAdapterTest {
     }
 
     @Test
-    void shouldReturnAListVoidAddressWhenThereDoNotData(){
-
+    @DisplayName("When Address Information No Exists Expect A List Void")
+    void When_AddressInformationNoExists_Expect_AListVoid(){
         when(addressJpaRepository.findAll()).thenReturn(Collections.emptyList());
         when(addressPersistenceMapper.toAddresses(anyList())).thenReturn(Collections.emptyList());
 
@@ -67,9 +70,10 @@ public class AddressPersistenceAdapterTest {
     }
 
     @Test
-    void shouldReturnAnAddressWhenFindById(){
-        AddressEntity addressEntity= TestUtils.buildAddressEntityMock();
-        Address address= TestUtils.buildAddressMock();
+    @DisplayName("When Address Identifier Is Correct Expect Address Information Successfully")
+    void When_AddressIdentifierIsCorrect_Expect_AddressInformationSuccessfully(){
+        AddressEntity addressEntity= TestUtilsAddress.buildAddressEntityMock();
+        Address address= TestUtilsAddress.buildAddressMock();
         when(addressJpaRepository.findById(anyLong())).thenReturn(Optional.of(addressEntity));
         when(addressPersistenceMapper.toAddress(any(AddressEntity.class))).thenReturn(address);
         Optional<Address> addressResponse=addressPersistenceAdapter.findById(1L);
@@ -77,5 +81,49 @@ public class AddressPersistenceAdapterTest {
         Mockito.verify(addressJpaRepository,times(1)).findById(anyLong());
         Mockito.verify(addressPersistenceMapper,times(1)).toAddress(any(AddressEntity.class));
 
+    }
+
+    @Test
+    @DisplayName("When Address Information Is Correct Expect Address Information To Be Saved Or Updated Successfully")
+    void When_AddressInformationIsCorrectExpectAddressInformationToBeSavedOrUpdatedSuccessfully(){
+        AddressEntity addressEntity= TestUtilsAddress.buildAddressEntityMock();
+        Address address= TestUtilsAddress.buildAddressMock();
+        when(addressJpaRepository.save(any(AddressEntity.class))).thenReturn(addressEntity);
+        when(addressPersistenceMapper.toAddressEntity(any(Address.class))).thenReturn(addressEntity);
+        when(addressPersistenceMapper.toAddress(any(AddressEntity.class))).thenReturn(address);
+        Address addressNew=addressPersistenceAdapter.save(address);
+        assertNotNull(addressNew);
+        assertEquals(address,addressNew);
+        Mockito.verify(addressJpaRepository,times(1)).save(any(AddressEntity.class));
+        Mockito.verify(addressPersistenceMapper,times(1)).toAddressEntity(any(Address.class));
+        Mockito.verify(addressPersistenceMapper,times(1)).toAddress(any(AddressEntity.class));
+    }
+
+    @Test
+    @DisplayName("When Address Information Is Correct Expect Address Information To Be Saved Or Updated Successfully")
+    void When_AddressAndClientInformationIsCorrectExpectAddressAndClientInformationToBeSavedSuccessfully(){
+        AddressEntity addressEntity= TestUtilsAddress.buildAddressEntityMock();
+        ClientEntity clientEntity= TestUtilsClient.buildClientEntityMock();
+        Address address= TestUtilsAddress.buildAddressMock();
+        Client client=TestUtilsClient.buildClientMock();
+        when(clientPersistenceMapper.toClientEntity(any(Client.class))).thenReturn(clientEntity);
+        when(addressPersistenceMapper.toAddressEntity(any(Address.class))).thenReturn(addressEntity);
+        when(addressJpaRepository.save(any(AddressEntity.class))).thenReturn(addressEntity);
+        when(addressPersistenceMapper.toAddress(any(AddressEntity.class))).thenReturn(address);
+        Address addressNew=addressPersistenceAdapter.save(address,client);
+        assertNotNull(addressNew);
+        assertEquals(address,addressNew);
+        Mockito.verify(addressJpaRepository,times(1)).save(any(AddressEntity.class));
+        Mockito.verify(addressPersistenceMapper,times(1)).toAddressEntity(any(Address.class));
+        Mockito.verify(addressPersistenceMapper,times(1)).toAddress(any(AddressEntity.class));
+        Mockito.verify(clientPersistenceMapper,times(1)).toClientEntity(any(Client.class));
+    }
+
+    @Test
+    @DisplayName("When Address Identifier Is Correct Expect Address Information To Be Deleted Successfully")
+    void When_AddressIdentifierIsCorrect_Expect_AddressInformationToBeDeletedSuccessfully(){
+        doNothing().when(addressJpaRepository).deleteById(anyLong());
+        addressPersistenceAdapter.delete(1L);
+        Mockito.verify(addressJpaRepository,times(1)).deleteById(anyLong());
     }
 }

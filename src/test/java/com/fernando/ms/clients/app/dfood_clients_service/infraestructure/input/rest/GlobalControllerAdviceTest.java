@@ -13,7 +13,8 @@ import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.mapper.ClientRestMapper;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.request.CreateClientRequest;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.ErrorResponse;
-import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtils;
+import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtilsClient;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -54,7 +55,8 @@ public class GlobalControllerAdviceTest {
     private ClientRestMapper clientRestMapper;
 
     @Test
-    void whenThrowsProductNotFoundExceptionThenReturnNotFound() throws Exception {
+    @DisplayName("Expect ClientNotFoundException When Customer Identifier Is Unknown")
+    void Expect_ClientNotFoundException_When_CustomerIdentifierIsUnknown() throws Exception {
         when(clientInputPort.findById(anyLong()))
                 .thenThrow(new ClientNotFoundException());
         mockMvc.perform(get("/clients/{id}",2L)
@@ -73,8 +75,8 @@ public class GlobalControllerAdviceTest {
     }
 
     @Test
-    void whenThrowsMethodArgumentNotValidExceptionThenReturnBadRequest() throws Exception {
-
+    @DisplayName("Expect MethodArgumentNotValidException When Customer Information Is Invalid")
+    void Expect_MethodArgumentNotValidException_When_CustomerInformationIsInvalid() throws Exception {
         mockMvc.perform(post("/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
@@ -95,7 +97,8 @@ public class GlobalControllerAdviceTest {
 
 
     @Test
-    void whenThrowsGenericExceptionThenReturnInternalServerErrorResponse() throws Exception {
+    @DisplayName("Expect RuntimeException When Customer Information Is Invalid")
+    void Expect_RuntimeException_When_CustomerInformationIsInvalid() throws Exception {
         when(clientInputPort.findAll())
                 .thenThrow(new RuntimeException("Generic error"));
 
@@ -116,9 +119,10 @@ public class GlobalControllerAdviceTest {
     }
 
     @Test
-    void whenThrowsClientEmailUserAlreadyExistsExceptionThenReturnBadRequest() throws Exception {
-        CreateClientRequest rq = TestUtils.buildClientCreateRequestMock();
-        Client client = TestUtils.buildClientMock();
+    @DisplayName("Expect ClientEmailAlreadyExistsException When Customer Email Already Exists")
+    void Expect_ClientEmailAlreadyExistsException_When_CustomerEmailAlreadyExists() throws Exception {
+        CreateClientRequest rq = TestUtilsClient.buildClientCreateRequestMock();
+        Client client = TestUtilsClient.buildClientMock();
 
         when(clientRestMapper.toClient(any(CreateClientRequest.class)))
                 .thenReturn(client);
@@ -143,7 +147,8 @@ public class GlobalControllerAdviceTest {
     }
 
     @Test
-    void whenThrowsAddressNotFoundExceptionThenReturnNotFound() throws Exception {
+    @DisplayName("Expect AddressNotFoundException When Address Identifier Is Unknown")
+    void Expect_AddressNotFoundException_When_AddressIdentifierIsUnknown() throws Exception {
         when(addressInputPort.findById(anyLong()))
                 .thenThrow(new AddressNotFoundException());
         mockMvc.perform(get("/addresses/{id}",2L)
