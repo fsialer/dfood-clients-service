@@ -2,11 +2,11 @@ package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter
 
 import com.fernando.ms.clients.app.dfood_clients_service.application.ports.output.AddressPersistencePort;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Address;
-import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Customer;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.mapper.AddressPersistenceMapper;
-import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.mapper.ClientPersistenceMapper;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.mapper.CustomerPersistenceMapper;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.AddressEntity;
-import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.ClientEntity;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.CustomerEntity;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.repository.AddressJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class AddressPersistenceAdapter implements AddressPersistencePort {
 
     private final AddressJpaRepository addressJpaRepository;
     private final AddressPersistenceMapper addressPersistenceMapper;
-    private final ClientPersistenceMapper clientPersistenceMapper;
+    private final CustomerPersistenceMapper customerPersistenceMapper;
 
 
     @Override
@@ -39,10 +39,10 @@ public class AddressPersistenceAdapter implements AddressPersistencePort {
     }
 
     @Override
-    public Address save(Address address, Client client) {
+    public Address save(Address address, Customer customer) {
         AddressEntity addressEntity=addressPersistenceMapper.toAddressEntity(address);
-        ClientEntity clientEntity=clientPersistenceMapper.toClientEntity(client);
-        addressEntity.setClient(clientEntity);
+        CustomerEntity customerEntity = customerPersistenceMapper.toClientEntity(customer);
+        addressEntity.setCustomer(customerEntity);
         return addressPersistenceMapper.toAddress(addressJpaRepository.save(addressEntity));
     }
 

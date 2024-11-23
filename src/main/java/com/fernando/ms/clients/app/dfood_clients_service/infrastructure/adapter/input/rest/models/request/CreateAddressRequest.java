@@ -16,5 +16,5 @@ public class CreateAddressRequest {
     private Integer number;
     @NotNull(message = "Field selected cannot be null.")
     private Boolean selected;
-    private Long clientId;
+    private Long customerId;
 }

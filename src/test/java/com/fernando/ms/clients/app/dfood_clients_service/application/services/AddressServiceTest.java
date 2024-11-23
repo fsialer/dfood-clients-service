@@ -1,13 +1,13 @@
 package com.fernando.ms.clients.app.dfood_clients_service.application.services;
 
 import com.fernando.ms.clients.app.dfood_clients_service.application.ports.output.AddressPersistencePort;
-import com.fernando.ms.clients.app.dfood_clients_service.application.ports.output.ClientPersistencePort;
+import com.fernando.ms.clients.app.dfood_clients_service.application.ports.output.CustomerPersistencePort;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.AddressNotFoundException;
-import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientNotFoundException;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.CustomerNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Address;
-import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Customer;
 import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtilsAddress;
-import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtilsClient;
+import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtilsCustomer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +31,7 @@ public class AddressServiceTest {
     private AddressPersistencePort addressPersistencePort;
 
     @Mock
-    private ClientPersistencePort clientPersistencePort;
+    private CustomerPersistencePort customerPersistencePort;
 
     @InjectMocks
     private AddressService addressService;
@@ -78,23 +78,23 @@ public class AddressServiceTest {
     @DisplayName("When Address Information Is Correct Expect Address To Be Saved")
     void When_AddressInformationIsCorrect_Expect_AddressToBeSaved() {
         Address address = TestUtilsAddress.buildAddressMock();
-        Client client= TestUtilsClient.buildClientMock();
-        when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.of(client));
-        when(addressPersistencePort.save(any(Address.class),any(Client.class))).thenReturn(address);
+        Customer customer = TestUtilsCustomer.buildCustomerMock();
+        when(customerPersistencePort.findById(anyLong())).thenReturn(Optional.of(customer));
+        when(addressPersistencePort.save(any(Address.class),any(Customer.class))).thenReturn(address);
         Address addressResponse = addressService.save(address);
         assertEquals(address, addressResponse);
-        Mockito.verify(addressPersistencePort, times(1)).save(any(Address.class),any(Client.class));
-        Mockito.verify(clientPersistencePort, times(1)).findById(anyLong());
+        Mockito.verify(addressPersistencePort, times(1)).save(any(Address.class),any(Customer.class));
+        Mockito.verify(customerPersistencePort, times(1)).findById(anyLong());
     }
 
     @Test
-    @DisplayName("Expect ClientNotFoundException When Address Information Your Client Is Unknown")
-    void Expect_ClientNotFoundException_When_AddressInformationYourClientIsUnknown() {
+    @DisplayName("Expect CustomerNotFoundException When Address Information Your Customer Is Unknown")
+    void Expect_CustomerNotFoundException_When_AddressInformationYourCustomerIsUnknown() {
         Address address = TestUtilsAddress.buildAddressMock();
-        when(clientPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(ClientNotFoundException.class,()->addressService.save(address));
-        Mockito.verify(addressPersistencePort, times(0)).save(any(Address.class),any(Client.class));
-        Mockito.verify(clientPersistencePort, times(1)).findById(anyLong());
+        when(customerPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(CustomerNotFoundException.class,()->addressService.save(address));
+        Mockito.verify(addressPersistencePort, times(0)).save(any(Address.class),any(Customer.class));
+        Mockito.verify(customerPersistencePort, times(1)).findById(anyLong());
     }
 
     @Test

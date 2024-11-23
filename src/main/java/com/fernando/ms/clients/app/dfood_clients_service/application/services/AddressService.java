@@ -2,9 +2,9 @@ package com.fernando.ms.clients.app.dfood_clients_service.application.services;
 
 import com.fernando.ms.clients.app.dfood_clients_service.application.ports.input.AddressInputPort;
 import com.fernando.ms.clients.app.dfood_clients_service.application.ports.output.AddressPersistencePort;
-import com.fernando.ms.clients.app.dfood_clients_service.application.ports.output.ClientPersistencePort;
+import com.fernando.ms.clients.app.dfood_clients_service.application.ports.output.CustomerPersistencePort;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.AddressNotFoundException;
-import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientNotFoundException;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.CustomerNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Address;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AddressService implements AddressInputPort {
     private final AddressPersistencePort addressPersistencePort;
-    private final ClientPersistencePort clientPersistencePort;
+    private final CustomerPersistencePort customerPersistencePort;
 
     @Override
     public List<Address> findAll() {
@@ -29,11 +29,11 @@ public class AddressService implements AddressInputPort {
 
     @Override
     public Address save(Address address) {
-        return clientPersistencePort.findById(address.getClientId())
+        return customerPersistencePort.findById(address.getCustomerId())
                 .map(client -> {
                     return addressPersistencePort.save(address,client);
                 })
-                .orElseThrow(ClientNotFoundException::new);
+                .orElseThrow(CustomerNotFoundException::new);
     }
 
     @Override

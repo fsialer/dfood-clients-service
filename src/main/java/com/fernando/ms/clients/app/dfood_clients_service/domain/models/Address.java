@@ -12,5 +12,5 @@ public class Address {
     private String street;
     private Integer number;
     private Boolean selected;
-    private Long clientId;
+    private Long customerId;
 }

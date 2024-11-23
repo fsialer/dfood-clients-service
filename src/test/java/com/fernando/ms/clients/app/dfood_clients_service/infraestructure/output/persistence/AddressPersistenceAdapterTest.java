@@ -1,15 +1,15 @@
 package com.fernando.ms.clients.app.dfood_clients_service.infraestructure.output.persistence;
 
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Address;
-import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Customer;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.AddressPersistenceAdapter;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.mapper.AddressPersistenceMapper;
-import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.mapper.ClientPersistenceMapper;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.mapper.CustomerPersistenceMapper;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.AddressEntity;
-import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.ClientEntity;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.CustomerEntity;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.repository.AddressJpaRepository;
 import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtilsAddress;
-import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtilsClient;
+import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtilsCustomer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +36,7 @@ public class AddressPersistenceAdapterTest {
     private AddressPersistenceMapper addressPersistenceMapper;
 
     @Mock
-    private ClientPersistenceMapper clientPersistenceMapper;
+    private CustomerPersistenceMapper customerPersistenceMapper;
 
     @InjectMocks
     private AddressPersistenceAdapter addressPersistenceAdapter;
@@ -100,23 +100,23 @@ public class AddressPersistenceAdapterTest {
     }
 
     @Test
-    @DisplayName("When Address Information Is Correct Expect Address Information To Be Saved Or Updated Successfully")
-    void When_AddressAndClientInformationIsCorrectExpectAddressAndClientInformationToBeSavedSuccessfully(){
+    @DisplayName("When Address And Customer Information Is Correct Expect Address And Customer Information To Be Saved Or Updated Successfully")
+    void When_AddressAndCustomerInformationIsCorrectExpectAddressAndCustomerInformationToBeSavedSuccessfully(){
         AddressEntity addressEntity= TestUtilsAddress.buildAddressEntityMock();
-        ClientEntity clientEntity= TestUtilsClient.buildClientEntityMock();
+        CustomerEntity customerEntity = TestUtilsCustomer.buildCustomerEntityMock();
         Address address= TestUtilsAddress.buildAddressMock();
-        Client client=TestUtilsClient.buildClientMock();
-        when(clientPersistenceMapper.toClientEntity(any(Client.class))).thenReturn(clientEntity);
+        Customer customer = TestUtilsCustomer.buildCustomerMock();
+        when(customerPersistenceMapper.toCustomerEntity(any(Customer.class))).thenReturn(customerEntity);
         when(addressPersistenceMapper.toAddressEntity(any(Address.class))).thenReturn(addressEntity);
         when(addressJpaRepository.save(any(AddressEntity.class))).thenReturn(addressEntity);
         when(addressPersistenceMapper.toAddress(any(AddressEntity.class))).thenReturn(address);
-        Address addressNew=addressPersistenceAdapter.save(address,client);
+        Address addressNew=addressPersistenceAdapter.save(address, customer);
         assertNotNull(addressNew);
         assertEquals(address,addressNew);
         Mockito.verify(addressJpaRepository,times(1)).save(any(AddressEntity.class));
         Mockito.verify(addressPersistenceMapper,times(1)).toAddressEntity(any(Address.class));
         Mockito.verify(addressPersistenceMapper,times(1)).toAddress(any(AddressEntity.class));
-        Mockito.verify(clientPersistenceMapper,times(1)).toClientEntity(any(Client.class));
+        Mockito.verify(customerPersistenceMapper,times(1)).toCustomerEntity(any(Customer.class));
     }
 
     @Test

@@ -1,6 +1,5 @@
 package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response;
 
-import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
 import lombok.*;
 
 @Getter
@@ -13,5 +12,5 @@ public class AddressResponse {
     private String street;
     private Integer number;
     private Boolean selected;
-    private ClientResponse client;
+    private CustomerResponse customer;
 }

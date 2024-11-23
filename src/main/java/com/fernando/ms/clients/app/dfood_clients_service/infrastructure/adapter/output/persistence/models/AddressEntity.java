@@ -23,6 +23,6 @@ public class AddressEntity {
     @ManyToOne
     @JoinColumn(name = "client_id")
     @JsonIgnore
-    private ClientEntity client;
+    private CustomerEntity customer;
     private LocalDate createdAt;
 }
