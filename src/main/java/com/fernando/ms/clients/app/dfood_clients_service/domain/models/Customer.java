@@ -1,6 +1,6 @@
 package com.fernando.ms.clients.app.dfood_clients_service.domain.models;
 
-import com.fernando.ms.clients.app.dfood_clients_service.domain.models.enums.StatusClient;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.models.enums.StatusCustomer;
 import lombok.*;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Client {
+public class Customer {
     private Long id;
     private String name;
     private String lastname;
@@ -18,6 +18,6 @@ public class Client {
     private String phone;
     private String email;
     private Long userId;
-    private StatusClient statusClient;
-    private List<Client> clients;
+    private StatusCustomer statusCustomer;
+    private List<Address> addresses;
 }

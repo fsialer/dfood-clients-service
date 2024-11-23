@@ -2,17 +2,14 @@ package com.fernando.ms.clients.app.dfood_clients_service.infraestructure.input.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fernando.ms.clients.app.dfood_clients_service.application.ports.input.AddressInputPort;
-import com.fernando.ms.clients.app.dfood_clients_service.application.ports.input.ClientInputPort;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Address;
-import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Client;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.AddressRestAdapter;
-import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.ClientRestAdapter;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.mapper.AddressRestMapper;
-import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.mapper.ClientRestMapper;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.request.CreateAddressRequest;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.AddressResponse;
-import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.ClientResponse;
-import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtils;
+import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtilsAddress;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,10 +47,10 @@ public class AddressRestAdapterTest {
     }
 
     @Test
-    void shouldReturnAListAddressWhenHaveData() throws Exception {
-
-        Address address= TestUtils.buildAddressMock();
-        List<AddressResponse> addressesResponse= Collections.singletonList(TestUtils.buildAddressResponseMock());
+    @DisplayName("When Addresses Is Availability Expect Addresses Information Successfully")
+    void When_AddressesIsAvailability_Expect_AddressesInformationSuccessfully() throws Exception {
+        Address address= TestUtilsAddress.buildAddressMock();
+        List<AddressResponse> addressesResponse= Collections.singletonList(TestUtilsAddress.buildAddressResponseMock());
 
         when(addressInputPort.findAll())
                 .thenReturn(Collections.singletonList(address));
@@ -73,10 +69,11 @@ public class AddressRestAdapterTest {
     }
 
     @Test
-    void shouldReturnAnAddressWhenFindById() throws Exception {
+    @DisplayName("When Address Identifier Is Correct Expect Address Information Successfully")
+    void When_AddressIdentifierIsCorrect_Expect_AddressInformationSuccessfully() throws Exception {
 
-        Address address= TestUtils.buildAddressMock();
-        AddressResponse addressResponse= TestUtils.buildAddressResponseMock();
+        Address address= TestUtilsAddress.buildAddressMock();
+        AddressResponse addressResponse= TestUtilsAddress.buildAddressResponseMock();
 
         when(addressInputPort.findById(anyLong()))
                 .thenReturn(address);
@@ -91,6 +88,73 @@ public class AddressRestAdapterTest {
 
         Mockito.verify(addressInputPort,times(1)).findById(anyLong());
         Mockito.verify(addressRestMapper,times(1)).toAddressResponse(any(Address.class));
+    }
+
+    @Test
+    @DisplayName("When AddressInformationIsCorrect Expect Address Information To Be Saved Successfully")
+    void When_AddressInformationIsCorrect_Expect_AddressInformationToBeSavedSuccessfully() throws Exception {
+        AddressResponse addressResponse= TestUtilsAddress.buildAddressResponseMock();
+        Address address= TestUtilsAddress.buildAddressMock();
+        CreateAddressRequest rq = TestUtilsAddress.buildCreateAddressRequest();
+
+        when(addressInputPort.save(any(Address.class)))
+                .thenReturn(address);
+        when(addressRestMapper.toAddressResponse(any(Address.class)))
+                .thenReturn(addressResponse);
+        when(addressRestMapper.toAddress(any(CreateAddressRequest.class))).thenReturn(address);
+
+        mockMvc.perform(post("/addresses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(rq)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$").isNotEmpty())
+                //.andExpect(jsonPath("$").value(clientResponse))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andDo(print());
+
+        Mockito.verify(addressInputPort,times(1)).save(any(Address.class));
+        Mockito.verify(addressRestMapper,times(1)).toAddressResponse(any(Address.class));
+        Mockito.verify(addressRestMapper,times(1)).toAddress(any(CreateAddressRequest.class));
+    }
+
+    @Test
+    @DisplayName("When Address Information Is Correct Expect Address Information To Be Updated Successfully")
+    void When_AddressInformationIsCorrect_Expect_AddressInformationToBeUpdatedSuccessfully() throws Exception {
+        AddressResponse addressResponse= TestUtilsAddress.buildAddressResponseMock();
+        Address address= TestUtilsAddress.buildAddressMock();
+        CreateAddressRequest rq = TestUtilsAddress.buildCreateAddressRequest();
+
+        when(addressInputPort.update(anyLong(),any(Address.class)))
+                .thenReturn(address);
+        when(addressRestMapper.toAddressResponse(any(Address.class)))
+                .thenReturn(addressResponse);
+        when(addressRestMapper.toAddress(any(CreateAddressRequest.class))).thenReturn(address);
+
+        mockMvc.perform(put("/addresses/{id}",1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(rq)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isNotEmpty())
+                //.andExpect(jsonPath("$").value(clientResponse))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andDo(print());
+
+        Mockito.verify(addressInputPort,times(1)).update(anyLong(),any(Address.class));
+        Mockito.verify(addressRestMapper,times(1)).toAddressResponse(any(Address.class));
+        Mockito.verify(addressRestMapper,times(1)).toAddress(any(CreateAddressRequest.class));
+    }
+
+    @Test
+    @DisplayName("When Address Identifier Is Correct Expect Address Information To Be Deleted Successfully")
+    void When_AddressIdentifierIsCorrect_Expect_AddressInformationToBeDeletedSuccessfully() throws Exception {
+        doNothing().when(addressInputPort).delete(anyLong());
+
+        mockMvc.perform(delete("/addresses/{id}",1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+        Mockito.verify(addressInputPort,times(1)).delete(anyLong());
+
     }
 
 }

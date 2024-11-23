@@ -2,15 +2,16 @@ package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateClientRequest {
+public class CreateCustomerRequest {
     @NotBlank(message = "Field name cannot be null or blank.")
     private String name;
     @NotBlank(message = "Field lastname cannot be null or blank.")
@@ -21,4 +22,5 @@ public class CreateClientRequest {
     @Email(message = "Field email do not valid.")
     private String email;
     private Long userId;
+    private List<CreateAddressRequest> addresses;
 }

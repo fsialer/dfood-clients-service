@@ -1,8 +1,8 @@
 package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest;
 
 import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.AddressNotFoundException;
-import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientEmailAlreadyExistsException;
-import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.ClientNotFoundException;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.CustomerEmailAlreadyExistsException;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.exceptions.CustomerNotFoundException;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -24,12 +24,12 @@ import static com.fernando.ms.clients.app.dfood_clients_service.infrastructure.u
 @RestControllerAdvice
 public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(ClientNotFoundException.class)
+    @ExceptionHandler(CustomerNotFoundException.class)
     public ErrorResponse handleProductNotFoundException() {
         return ErrorResponse.builder()
-                .code(CLIENTS_NOT_FOUND.getCode())
+                .code(CUSTOMER_NOT_FOUND.getCode())
                 .type(FUNCTIONAL)
-                .message(CLIENTS_NOT_FOUND.getMessage())
+                .message(CUSTOMER_NOT_FOUND.getMessage())
                 .timestamp(LocalDate.now().toString())
                 .build();
     }
@@ -38,9 +38,9 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(AddressNotFoundException.class)
     public ErrorResponse handleAddressNotFoundException() {
         return ErrorResponse.builder()
-                .code(CLIENTS_ADDRESS_NOT_FOUND.getCode())
+                .code(CUSTOMERS_ADDRESS_NOT_FOUND.getCode())
                 .type(FUNCTIONAL)
-                .message(CLIENTS_ADDRESS_NOT_FOUND.getMessage())
+                .message(CUSTOMERS_ADDRESS_NOT_FOUND.getMessage())
                 .timestamp(LocalDate.now().toString())
                 .build();
     }
@@ -53,9 +53,9 @@ public class GlobalControllerAdvice {
             MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
         return ErrorResponse.builder()
-                .code(CLIENTS_BAD_PARAMETERS.getCode())
+                .code(CUSTOMERS_BAD_PARAMETERS.getCode())
                 .type(FUNCTIONAL)
-                .message(CLIENTS_BAD_PARAMETERS.getMessage())
+                .message(CUSTOMERS_BAD_PARAMETERS.getMessage())
                 .details(bindingResult.getFieldErrors().stream()
                         .map(DefaultMessageSourceResolvable::getDefaultMessage)
                         .toList())
@@ -64,12 +64,12 @@ public class GlobalControllerAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ClientEmailAlreadyExistsException.class)
-    public ErrorResponse handleClientEmailAlreadyExistsException(ClientEmailAlreadyExistsException e) {
+    @ExceptionHandler(CustomerEmailAlreadyExistsException.class)
+    public ErrorResponse handleClientEmailAlreadyExistsException(CustomerEmailAlreadyExistsException e) {
         return ErrorResponse.builder()
-                .code(CLIENTS_EMAIL_USER_ALREADY_EXISTS.getCode())
+                .code(CUSTOMERS_EMAIL_USER_ALREADY_EXISTS.getCode())
                 .type(FUNCTIONAL)
-                .message(CLIENTS_EMAIL_USER_ALREADY_EXISTS.getMessage())
+                .message(CUSTOMERS_EMAIL_USER_ALREADY_EXISTS.getMessage())
                 .timestamp(LocalDate.now().toString())
                 .details(Collections.singletonList(e.getMessage()))
                 .build();

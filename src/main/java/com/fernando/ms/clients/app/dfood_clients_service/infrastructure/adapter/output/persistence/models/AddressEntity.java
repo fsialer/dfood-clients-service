@@ -1,5 +1,6 @@
 package com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +21,8 @@ public class AddressEntity {
     private Integer number;
     private Boolean selected;
     @ManyToOne
-    private ClientEntity client;
+    @JoinColumn(name = "client_id")
+    @JsonIgnore
+    private CustomerEntity customer;
     private LocalDate createdAt;
 }
