@@ -21,17 +21,17 @@ public class CustomerPersistenceAdapter implements CustomerPersistencePort {
     private final AddressPersistenceMapper addressPersistenceMapper;
     @Override
     public List<Customer> findAll() {
-        return customerPersistenceMapper.toClients(customerJpaRepository.findAll());
+        return customerPersistenceMapper.toCustomers(customerJpaRepository.findAll());
     }
 
     @Override
     public Optional<Customer> findById(Long id) {
-        return customerJpaRepository.findById(id).map(customerPersistenceMapper::toClient);
+        return customerJpaRepository.findById(id).map(customerPersistenceMapper::toCustomer);
     }
 
     @Override
     public Customer save(Customer customer) {
-        CustomerEntity customerEntity = customerPersistenceMapper.toClientEntity(customer);
+        CustomerEntity customerEntity = customerPersistenceMapper.toCustomerEntity(customer);
         // Manejar direcciones manualmente si es necesario
         if (customer.getAddresses() != null) {
             customerEntity.setAddresses(customer.getAddresses().stream()
@@ -39,7 +39,7 @@ public class CustomerPersistenceAdapter implements CustomerPersistencePort {
                     .peek(address -> address.setCustomer(customerEntity)) // Configurar la relación inversa
                     .collect(Collectors.toList()));
         }
-        return customerPersistenceMapper.toClient(customerJpaRepository.save(customerEntity));
+        return customerPersistenceMapper.toCustomer(customerJpaRepository.save(customerEntity));
     }
 
     @Override

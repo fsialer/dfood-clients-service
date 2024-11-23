@@ -14,7 +14,7 @@ public interface AddressPersistenceMapper {
 
     Address toAddress(AddressEntity address);
 
-    @Mapping(target = "client", ignore = true)
+    @Mapping(target = "customer", ignore = true)
     AddressEntity toAddressEntity(Address address);
 
 

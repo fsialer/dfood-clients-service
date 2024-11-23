@@ -41,7 +41,7 @@ public class AddressPersistenceAdapter implements AddressPersistencePort {
     @Override
     public Address save(Address address, Customer customer) {
         AddressEntity addressEntity=addressPersistenceMapper.toAddressEntity(address);
-        CustomerEntity customerEntity = customerPersistenceMapper.toClientEntity(customer);
+        CustomerEntity customerEntity = customerPersistenceMapper.toCustomerEntity(customer);
         addressEntity.setCustomer(customerEntity);
         return addressPersistenceMapper.toAddress(addressJpaRepository.save(addressEntity));
     }

@@ -59,7 +59,7 @@ public class GlobalControllerAdviceTest {
     void Expect_CustomerNotFoundException_When_CustomerIdentifierIsUnknown() throws Exception {
         when(customerInputPort.findById(anyLong()))
                 .thenThrow(new CustomerNotFoundException());
-        mockMvc.perform(get("/clients/{id}",2L)
+        mockMvc.perform(get("/customers/{id}",2L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(result->{
@@ -77,7 +77,7 @@ public class GlobalControllerAdviceTest {
     @Test
     @DisplayName("Expect MethodArgumentNotValidException When Customer Information Is Invalid")
     void Expect_MethodArgumentNotValidException_When_CustomerInformationIsInvalid() throws Exception {
-        mockMvc.perform(post("/clients")
+        mockMvc.perform(post("/customers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isBadRequest())
@@ -102,7 +102,7 @@ public class GlobalControllerAdviceTest {
         when(customerInputPort.findAll())
                 .thenThrow(new RuntimeException("Generic error"));
 
-        mockMvc.perform(get("/clients")
+        mockMvc.perform(get("/customers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
@@ -130,7 +130,7 @@ public class GlobalControllerAdviceTest {
         when(customerInputPort.save(any(Customer.class)))
                 .thenThrow(new CustomerEmailAlreadyExistsException(rq.getEmail()));
 
-        mockMvc.perform(post("/clients")
+        mockMvc.perform(post("/customers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(rq)))
                 .andExpect(status().isBadRequest())
