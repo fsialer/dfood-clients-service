@@ -8,6 +8,7 @@ import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.AddressEntity;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.CustomerEntity;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.repository.AddressJpaRepository;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.repository.CustomerUserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

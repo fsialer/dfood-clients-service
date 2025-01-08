@@ -17,7 +17,8 @@ public class Customer {
     private String fullName;
     private String phone;
     private String email;
-    private Long userId;
+    //private Long userId;
+    private User user;
     private StatusCustomer statusCustomer;
     private List<Address> addresses;
 }

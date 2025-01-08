@@ -44,7 +44,6 @@ public class CustomerService implements CustomerInputPort {
                     clientUpdated.setPhone(customer.getPhone());
                     System.out.println(clientUpdated.getEmail().equals(customer.getEmail()));
                     if (!clientUpdated.getEmail().equals(customer.getEmail())) {
-
                         if (customerPersistencePort.existsByEmail(customer.getEmail())) {
                             throw new CustomerEmailAlreadyExistsException(customer.getEmail());
                         }

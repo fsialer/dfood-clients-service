@@ -3,12 +3,14 @@ package com.fernando.ms.clients.app.dfood_clients_service.utils;
 
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Address;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.Customer;
+import com.fernando.ms.clients.app.dfood_clients_service.domain.models.User;
 import com.fernando.ms.clients.app.dfood_clients_service.domain.models.enums.StatusCustomer;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.request.CreateAddressRequest;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.request.CreateCustomerRequest;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.CustomerResponse;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.AddressEntity;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.CustomerEntity;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.CustomerUser;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +25,7 @@ public class TestUtilsCustomer {
                 .fullName("Fernando Sialer")
                 .phone("965012869")
                 .email("asialer05@hotmail.com")
-                .userId(1L)
+                .user(User.builder().id(1L).build())
                 .statusCustomer(StatusCustomer.REGISTERED)
                 .build();
     }
@@ -36,7 +38,7 @@ public class TestUtilsCustomer {
                 .fullName("Fernando Sialer")
                 .phone("965012869")
                 .email("asialer05@hotmail.com")
-                .userId(1L)
+                .user(User.builder().id(1L).build())
                 .statusCustomer(StatusCustomer.REGISTERED)
                 .addresses(List.of(
                         Address.builder()
@@ -55,7 +57,7 @@ public class TestUtilsCustomer {
                 .fullName("Fernando Sialer")
                 .phone("965012869")
                 .email("asialer05@hotmail.com")
-                .userId(1L)
+                .user(User.builder().id(1L).build())
                 .statusCustomer(StatusCustomer.INACTIVE)
                 .build();
     }
@@ -69,7 +71,7 @@ public class TestUtilsCustomer {
                 .fullName("Fernando Sialer")
                 .phone("965012869")
                 .email("asialer02@hotmail.com")
-                .userId(1L)
+                .user(User.builder().id(1L).build())
                 .statusCustomer(StatusCustomer.REGISTERED)
                 .build();
     }
@@ -127,7 +129,7 @@ public class TestUtilsCustomer {
                 .fullName("Fernando Sialer")
                 .phone("965012869")
                 .email("asialer05@hotmail.com")
-                .userId(1L)
+                .customerUser(CustomerUser.builder().id(1L).build())
                 .createdAt(LocalDate.now())
                 .statusCustomer(StatusCustomer.REGISTERED)
                 .build();
@@ -141,7 +143,7 @@ public class TestUtilsCustomer {
                 .fullName("Fernando Sialer")
                 .phone("965012869")
                 .email("asialer05@hotmail.com")
-                .userId(1L)
+                .customerUser(CustomerUser.builder().id(1L).build())
                 .createdAt(LocalDate.now())
                 .statusCustomer(StatusCustomer.REGISTERED)
                 .addresses(List.of(

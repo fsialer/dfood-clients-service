@@ -23,9 +23,15 @@ public class CustomerEntity {
     private String fullName;
     private String phone;
     private String email;
-    private Long userId;
+    //private Long userId;
     private StatusCustomer statusCustomer;
     private LocalDate createdAt;
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AddressEntity> addresses;
+    @OneToOne(mappedBy = "customer",cascade = CascadeType.ALL, orphanRemoval = true)
+    private CustomerUser customerUser;
+
+    public void setUserId(Long id){
+       this.customerUser=CustomerUser.builder().userId(id).customer(this).build();
+    }
 }

@@ -39,6 +39,7 @@ public class CustomerPersistenceAdapter implements CustomerPersistencePort {
                     .peek(address -> address.setCustomer(customerEntity)) // Configurar la relación inversa
                     .collect(Collectors.toList()));
         }
+        customerEntity.setUserId(customer.getUser().getId());
         return customerPersistenceMapper.toCustomer(customerJpaRepository.save(customerEntity));
     }
 

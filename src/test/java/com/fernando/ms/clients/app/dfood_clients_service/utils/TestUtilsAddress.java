@@ -6,6 +6,7 @@ import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.input.rest.models.response.AddressResponse;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.AddressEntity;
 import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.CustomerEntity;
+import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.output.persistence.models.CustomerUser;
 
 import java.time.LocalDate;
 
@@ -43,7 +44,7 @@ public class TestUtilsAddress {
                         .fullName("Fernando Sialer")
                         .phone("965012869")
                         .email("asialer05@hotmail.com")
-                        .userId(1L)
+                        .customerUser(CustomerUser.builder().userId(1L).build())
                         .createdAt(LocalDate.now())
                         .statusCustomer(StatusCustomer.REGISTERED).build())
                 .build();
