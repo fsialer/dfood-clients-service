@@ -72,4 +72,13 @@ public class CustomerService implements CustomerInputPort {
         customerPersistencePort.delete(id);
     }
 
+    @Override
+    public void verifyExistsById(Long id) {
+        if (!customerPersistencePort.findById(id).isPresent()){
+            throw new CustomerNotFoundException();
+        }
+
+        customerPersistencePort.verifyExistsById(id);
+    }
+
 }

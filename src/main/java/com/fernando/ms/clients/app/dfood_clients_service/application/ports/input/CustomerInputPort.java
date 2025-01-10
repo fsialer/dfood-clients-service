@@ -17,4 +17,6 @@ public interface CustomerInputPort {
     Customer inactive(Long id);
 
     void delete(Long id);
+
+    void verifyExistsById(Long id);
 }

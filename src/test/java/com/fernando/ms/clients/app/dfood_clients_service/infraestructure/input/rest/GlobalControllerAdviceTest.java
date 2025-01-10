@@ -16,6 +16,7 @@ import com.fernando.ms.clients.app.dfood_clients_service.infrastructure.adapter.
 import com.fernando.ms.clients.app.dfood_clients_service.utils.TestUtilsCustomer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -164,6 +165,19 @@ public class GlobalControllerAdviceTest {
                             ()->assertNotNull(errorResponse.getTimestamp())
                     );
                 });
+    }
+
+    @Test
+    @DisplayName("When Customer Identifier Is Correct Expect Customer Verified Successfully")
+    void When_CustomerIdentifierIsCorrect_Expect_CustomerVerifiedSuccessfully() throws Exception {
+        doNothing().when(customerInputPort).verifyExistsById(anyLong());
+
+        mockMvc.perform(get("/customers/verify-exists-by-id")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("id","1"))
+                .andExpect(status().isNoContent());
+
+        Mockito.verify(customerInputPort,times(1)).verifyExistsById(anyLong());
     }
 
 }

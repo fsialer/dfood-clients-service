@@ -53,5 +53,10 @@ public class CustomerPersistenceAdapter implements CustomerPersistencePort {
         customerJpaRepository.deleteById(id);
     }
 
+    @Override
+    public void verifyExistsById(Long id) {
+        customerJpaRepository.existsById(id);
+    }
+
 
 }

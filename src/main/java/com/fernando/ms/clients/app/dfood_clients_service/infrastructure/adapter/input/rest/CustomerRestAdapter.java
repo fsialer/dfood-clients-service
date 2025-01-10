@@ -52,4 +52,10 @@ public class CustomerRestAdapter {
         customerInputPort.delete(id);
     }
 
+    @GetMapping("verify-exists-by-id")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void verifyExistsById(@RequestParam("id") Long id){
+        customerInputPort.verifyExistsById(id);
+    }
+
 }

@@ -116,4 +116,12 @@ public class CustomerPersistenceAdapterTest {
         clientPersistenceAdapter.delete(1L);
         Mockito.verify(customerJpaRepository,times(1)).deleteById(anyLong());
     }
+
+    @Test
+    @DisplayName("When Customer Identifier Is Correct Expect Return true")
+    void When_CustomerIdentifierIsCorrect_Expect_ReturnTrue(){
+        when(customerJpaRepository.existsById(anyLong())).thenReturn(true);
+        clientPersistenceAdapter.verifyExistsById(1L);
+        Mockito.verify(customerJpaRepository,times(1)).existsById(anyLong());
+    }
 }

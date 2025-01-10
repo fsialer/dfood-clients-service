@@ -174,6 +174,26 @@ public class CustomerServiceTest {
         Mockito.verify(customerPersistencePort,times(0)).delete(anyLong());
         Mockito.verify(customerPersistencePort,times(1)).findById(anyLong());
     }
+
+    @Test
+    @DisplayName("When Customer Identifier Is Correct Expect Return true")
+    void When_CustomerIdentifierIsCorrect_Expect_ReturnTrue(){
+        Customer customerNew = TestUtilsCustomer.buildCustomerMock();
+        when(customerPersistencePort.findById(anyLong())).thenReturn(Optional.of(customerNew));
+        doNothing().when(customerPersistencePort).verifyExistsById(anyLong());
+        customerService.verifyExistsById(1L);
+        Mockito.verify(customerPersistencePort,times(1)).findById(anyLong());
+        Mockito.verify(customerPersistencePort,times(1)).verifyExistsById(anyLong());
+    }
+
+    @Test
+    @DisplayName("Expect CustomerNotFoundException When Customer Identifier Is Incorrect")
+    void Expect_CustomerNotFoundException_When_CustomerIdentifierIsIncorrect(){
+        when(customerPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(CustomerNotFoundException.class,()->customerService.verifyExistsById(1L));
+        Mockito.verify(customerPersistencePort,times(1)).findById(anyLong());
+        Mockito.verify(customerPersistencePort,times(0)).verifyExistsById(anyLong());
+    }
 }
 
 

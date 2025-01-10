@@ -12,4 +12,5 @@ public interface CustomerPersistencePort {
     Customer save(Customer customer);
     boolean existsByEmail(String email);
     void delete(Long id);
+    void verifyExistsById(Long id);
 }
